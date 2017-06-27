@@ -9,11 +9,7 @@ struct Cell
     unsigned int all;
     unsigned int died;
     Cell(int cf = 0, int cd = 0)
-        :all(cf),died(cd){}
-
-public:
-    unsigned int getCountFlies() const;
-    void setCountFlies(unsigned int value);
+        :all(cf),died(cd) {}
 };
 
 class Area : public QObject

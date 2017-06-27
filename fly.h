@@ -8,25 +8,28 @@
 struct Telemetry
 {
     enum { Died, Live };
-    Telemetry() : age(0), distance(0), speed(0), state(Live) {}
-    size_t age;
-    size_t distance;
-    float speed;
-    unsigned char state;
+    Telemetry()
+        : age(0), distance(0), speed(0), state(Live) {}
 
-public:
-    std::string toString() const {
+    std::string toString() const
+    {
         std::string str;
-        str.append("Age: ")
-           .append(std::to_string(age))
-           .append(", Distance: ")
-           .append(std::to_string(distance))
-           .append(", Speed: ")
-           .append(std::to_string(speed))
+        str.append("Lifetime: ")
+            .append(std::to_string(float(age)/1000.0))
+            .append(" sec, Distance: ")
+            .append(std::to_string(distance))
+            .append(" cells, Speed: ")
+            .append(std::to_string(speed))
+            .append(" cell/sec")
            .append(", Status: ")
            .append((state == Live ? "Live" : "Died"));
         return str;
     }
+
+    size_t age;
+    size_t distance;
+    float speed;
+    unsigned char state;
 };
 
 class Fly
