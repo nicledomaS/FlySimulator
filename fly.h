@@ -2,6 +2,7 @@
 #define FLY_H
 #include <memory>
 #include <vector>
+#include <string>
 #include "area.h"
 
 struct Telemetry
@@ -12,6 +13,20 @@ struct Telemetry
     size_t distance;
     float speed;
     unsigned char state;
+
+public:
+    std::string toString() const {
+        std::string str;
+        str.append("Age: ")
+           .append(std::to_string(age))
+           .append(", Distance: ")
+           .append(std::to_string(distance))
+           .append(", Speed: ")
+           .append(std::to_string(speed))
+           .append(", Status: ")
+           .append((state == Live ? "Live" : "Died"));
+        return str;
+    }
 };
 
 class Fly
@@ -22,7 +37,7 @@ public:
     size_t think() const { return stupidity; }
     void goTo(Area& area);
     const Telemetry &getTelemetry() const { return telemetry; }
-    unsigned char Fly::getState() const { return telemetry.state; }
+    unsigned char getState() const { return telemetry.state; }
     void printTelemetry() const;
 private:
     Fly(const Fly&);

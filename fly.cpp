@@ -41,6 +41,6 @@ void Fly::goTo(Area &area)
         telemetry.state = Telemetry::Died;
         area.die(xPos, yPos);
     }
-    telemetry.speed += telemetry.distance / telemetry.age;
+    telemetry.speed = telemetry.distance / telemetry.age;
 }
 

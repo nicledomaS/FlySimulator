@@ -55,12 +55,12 @@ QVariant MatrixModel::data(const QModelIndex & index, int role) const
     if(!index.isValid())
         return res;
 
-    const unsigned short row = index.row();
-    const unsigned short col = index.column();
-    if (row >= row || col >= column)
+    const unsigned short irow = index.row();
+    const unsigned short icol = index.column();
+    if (irow >= row || icol >= column)
         return res;
 
-    Cell cell = rArea.population(row, col);
+    Cell cell = rArea.population(irow, icol);
     int live = cell.all - cell.died;
     int dead = cell.died;
     QString value = (live || dead)?QString("%1:%2:%3").arg(cell.all).arg(live).arg(dead):"";

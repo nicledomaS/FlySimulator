@@ -78,17 +78,17 @@ void MainWindow::on_start_clicked()
 void MainWindow::on_stop_clicked()
 {
     setupControls(true);
+    simulator.stop();
+
+    QString text;
+    const std::vector<Fly::Ptr_t>& flies = simulator.getFlies();
+    auto collector = [&text] (const Fly::Ptr_t& fly) {
+            text += QString::fromStdString(fly->getTelemetry().toString() + "\n");
+    };
+    std::for_each(flies.begin(), flies.end(), collector);
+
     Statistics * st = new Statistics(this);
     st->setWindowTitle("Fly statistics");
-    simulator.stop();
-    const std::vector<Fly::Ptr_t>& flies = simulator.getFlies();
-    QString text;
-    std::for_each(flies.begin(), flies.end(), [&text](const Fly::Ptr_t& fly)
-    {
-        const Telemetry& tel = fly->getTelemetry();
-        text.push_back(QString("Age: %1, Distanc: %2, Speed: %3, Status: %4.\n").arg(tel.age).arg(tel.distance).arg(tel.speed).arg(tel.state == Telemetry::Live ? "Live" : "Died"));
-    });
     st->setText(text);
-
     st->show();
 }
