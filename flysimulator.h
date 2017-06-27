@@ -8,15 +8,15 @@
 class FlySimulator
 {
 public:
-    FlySimulator(const size_t maxPos = 20, const size_t count = 15, const size_t stup = 200);
+    FlySimulator(size_t maxPos = 20, size_t count = 15, size_t stup = 200);
     ~FlySimulator();
 
     void setParams(size_t filedSize, size_t capacity, size_t stup);
     void start();
     void stop();
     void addFly();
-    const Area& getArea() const;
-    const std::vector<Fly::Ptr_t> getFlies() const;
+    const Area &getArea() const { return area; }
+    const std::vector<Fly::Ptr_t> getFlies() const { return flies; }
 
 private:
     Area area;

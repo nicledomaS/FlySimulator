@@ -3,8 +3,8 @@
 
 MatrixModel::MatrixModel(const Area &area)
     :   rArea(area),
-        maxColumn(0),
-        maxRow(0)
+        column(0),
+        row(0)
 {
     connect(&rArea, Area::updated, this, MatrixModel::updateAll, Qt::QueuedConnection);
 }
@@ -17,21 +17,21 @@ MatrixModel::~MatrixModel()
 void MatrixModel::reload()
 {
     emit layoutAboutToBeChanged();
-    maxColumn = rArea.size();
-    maxRow = rArea.size();
+    column = rArea.size();
+    row = rArea.size();
     emit layoutChanged();
     updateAll();
 }
 
 void MatrixModel::updateAll()
 {
-    dataChanged(index(0,0),index(maxRow-1,maxColumn-1));
+    dataChanged(index(0,0),index(row-1,column-1));
 }
 
 QModelIndex MatrixModel::index(int row, int col, const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    if(row < maxRow && col < maxColumn)
+    if(row < row && col < column)
         return createIndex(row,col);
    return QModelIndex();
 }
@@ -39,13 +39,13 @@ QModelIndex MatrixModel::index(int row, int col, const QModelIndex &parent) cons
 int MatrixModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return maxRow;
+    return row;
 }
 
 int MatrixModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return maxColumn;
+    return column;
 }
 
 QVariant MatrixModel::data(const QModelIndex & index, int role) const
@@ -57,13 +57,13 @@ QVariant MatrixModel::data(const QModelIndex & index, int role) const
 
     const unsigned short row = index.row();
     const unsigned short col = index.column();
-    if (row >= maxRow || col >= maxColumn)
+    if (row >= row || col >= column)
         return res;
 
-    Cell cell = rArea.getData(row, col);
-    int live = cell.flies - cell.diedFlies;
-    int dead = cell.diedFlies;
-    QString value = (live || dead)?QString("%1:%2").arg(live).arg(dead):"";
+    Cell cell = rArea.population(row, col);
+    int live = cell.all - cell.died;
+    int dead = cell.died;
+    QString value = (live || dead)?QString("%1:%2:%3").arg(cell.all).arg(live).arg(dead):"";
     return QVariant(value);
 }
 
@@ -90,21 +90,22 @@ void Renderer::paint(QPainter * painter, const QStyleOptionViewItem & option, co
         return;
 
     QRect rect = option.rect;
-    QRect tr = rect;
-    tr -= QMargins(5,0,0,5);
+    rect -= QMargins(3,0,3,0);
 
     QString rawData = index.data().toString();
     QStringList flies = rawData.split(':');
-    if(flies.size() != 2)
+    if(flies.size() != 3)
         return;
 
-    if (flies[0].size() && flies[0] != "0" ) {
+    if (flies[1] != "0" )
+    {
         painter->setPen(Qt::red);
-        painter->drawText(tr, Qt::AlignLeft|Qt::AlignVCenter, flies[0]);
+        painter->drawText(rect, Qt::AlignLeft|Qt::AlignVCenter, flies[1]);
     }
 
-    if (flies[1].size() && flies[1] != "0" ) {
+    if (flies[2] != "0" )
+    {
         painter->setPen(Qt::darkGray);
-        painter->drawText(tr, Qt::AlignRight|Qt::AlignVCenter, flies[1]);
+        painter->drawText(rect, Qt::AlignRight|Qt::AlignVCenter, flies[2]);
     }
 }

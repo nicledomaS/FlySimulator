@@ -19,13 +19,10 @@ class Fly
 public:
     typedef std::shared_ptr<Fly> Ptr_t;
     Fly(const unsigned short x, const unsigned short y, const size_t stup);
-
     size_t think() const { return stupidity; }
     void goTo(Area& area);
-
-
-    const Telemetry& getTelemetry() const;
-    unsigned char getState() const;
+    const Telemetry &getTelemetry() const { return telemetry; }
+    unsigned char Fly::getState() const { return telemetry.state; }
     void printTelemetry() const;
 private:
     Fly(const Fly&);

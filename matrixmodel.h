@@ -20,8 +20,8 @@ public:
 private:
     void updateAll();
     const Area &rArea;
-    int maxColumn;
-    int maxRow;
+    int column;
+    int row;
 };
 
 class Renderer : public QAbstractItemDelegate

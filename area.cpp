@@ -1,6 +1,14 @@
 #include "area.h"
 
-Area::Area(const size_t maxPos, const size_t count, QObject * parent)
+static unsigned long createKey(const unsigned short x, const unsigned short y)
+{
+    unsigned long key = x;
+    key <<= 16;
+    key |= y;
+    return key;
+}
+
+Area::Area(size_t maxPos, size_t count, QObject * parent)
     :   QObject(parent),
       fieldSize(maxPos),
       flyCapacity(count)
@@ -13,8 +21,8 @@ Area::~Area()
 
 }
 
-bool Area::goToCell(const unsigned short curX, const unsigned short curY,
-                    const unsigned short newX, const unsigned short newY)
+bool Area::goTo(unsigned short curX, unsigned short curY,
+                    unsigned short newX, unsigned short newY)
 {
     std::unique_lock<std::mutex> lock(mtx);
     if(!goIn(createKey(newX, newY)))
@@ -24,13 +32,13 @@ bool Area::goToCell(const unsigned short curX, const unsigned short curY,
     return true;
 }
 
-bool Area::flySat(const unsigned short x, const unsigned short y)
+bool Area::landing(unsigned short x, unsigned short y)
 {
     std::unique_lock<std::mutex> lock(mtx);
     return goIn(createKey(x, y));
 }
 
-void Area::flyDied(const unsigned short x, const unsigned short y)
+void Area::die(unsigned short x, unsigned short y)
 {
     std::unique_lock<std::mutex> lock(mtx);
     unsigned long position = createKey(x, y);
@@ -38,10 +46,13 @@ void Area::flyDied(const unsigned short x, const unsigned short y)
     if(it == cells.end())
         cells[position] =  Cell(1, 1);
     else
-        ++(*it).second.diedFlies;
+    {
+        Cell & cell = (*it).second;
+        ++cell.died;
+    }
 }
 
-Cell Area::getData(const unsigned short x, const unsigned short y) const
+Cell Area::population(const unsigned short x, const unsigned short y) const
 {
     auto it = cells.find(createKey(x, y));
     if(it == cells.end())
@@ -49,7 +60,7 @@ Cell Area::getData(const unsigned short x, const unsigned short y) const
     return it->second;
 }
 
-bool Area::goIn(const unsigned long position)
+bool Area::goIn(unsigned long position)
 {
     auto it = cells.find(position);
     if(it == cells.end())
@@ -57,26 +68,22 @@ bool Area::goIn(const unsigned long position)
         cells[position] = Cell(1, 0);
         return true;
     }
-    else if((*it).second.flies < flyCapacity)
+
+    Cell & cell = (*it).second;
+    if(cell.all < flyCapacity)
     {
-        ++(*it).second.flies;
+        ++cell.all;
         return true;
     }
     return false;
 }
 
-void Area::goOut(const unsigned long position)
+void Area::goOut(unsigned long position)
 {
     auto it =cells.find(position);
     if(it == cells.end())
         return;
-    --(*it).second.flies;
-}
 
-unsigned long Area::createKey(const unsigned short x, const unsigned short y) const
-{
-    unsigned long key = x;
-    key <<= 16;
-    key |= y;
-    return key;
+    Cell & cell = (*it).second;
+    --cell.all;
 }

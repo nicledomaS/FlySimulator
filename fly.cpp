@@ -30,7 +30,7 @@ void Fly::goTo(Area &area)
     else
         y += dir.dY;
 
-    if(area.goToCell(xPos, yPos, x, y))
+    if(area.goTo(xPos, yPos, x, y))
     {
         xPos = x;
         yPos = y;
@@ -39,18 +39,8 @@ void Fly::goTo(Area &area)
     if(++telemetry.age == area.size())
     {
         telemetry.state = Telemetry::Died;
-        area.flyDied(xPos, yPos);
+        area.die(xPos, yPos);
     }
     telemetry.speed += telemetry.distance / telemetry.age;
-}
-
-const Telemetry &Fly::getTelemetry() const
-{
-    return telemetry;
-}
-
-unsigned char Fly::getState() const
-{
-    return telemetry.state;
 }
 

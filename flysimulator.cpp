@@ -5,7 +5,7 @@
 
 using namespace std;
 
-FlySimulator::FlySimulator(const size_t maxPos, const size_t count, const size_t stup)
+FlySimulator::FlySimulator(size_t maxPos, size_t count, size_t stup)
     :   area(maxPos, count),
         stupidity(stup),
         stopFlag(false)
@@ -49,7 +49,7 @@ void FlySimulator::addFly()
     unsigned short x = rand() % area.size();
     unsigned short y = rand() % area.size();
 
-    if(!area.flySat(x, y))
+    if(!area.landing(x, y))
         return;
 
     auto flyProcess = [this](Area& rArea, Fly::Ptr_t pFly)
@@ -69,14 +69,4 @@ void FlySimulator::addFly()
     Fly::Ptr_t pFly = make_shared<Fly>(x, y, stupidity);
     flies.push_back(pFly);
     threads.push_back(thread(flyProcess, ref(area), pFly));
-}
-
-const Area &FlySimulator::getArea() const
-{
-    return area;
-}
-
-const std::vector<Fly::Ptr_t> FlySimulator::getFlies() const
-{
-    return flies;
 }
