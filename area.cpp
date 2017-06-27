@@ -35,7 +35,9 @@ bool Area::goTo(unsigned short curX, unsigned short curY,
 bool Area::landing(unsigned short x, unsigned short y)
 {
     std::unique_lock<std::mutex> lock(mtx);
-    return goIn(createKey(x, y));
+    bool res = goIn(createKey(x, y));
+    emit updated();
+    return res;
 }
 
 void Area::die(unsigned short x, unsigned short y)
@@ -50,6 +52,7 @@ void Area::die(unsigned short x, unsigned short y)
         Cell & cell = (*it).second;
         ++cell.died;
     }
+    emit updated();
 }
 
 Cell Area::population(const unsigned short x, const unsigned short y) const

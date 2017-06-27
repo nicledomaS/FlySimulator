@@ -10,7 +10,7 @@ FlySimulator::FlySimulator(size_t maxPos, size_t count, size_t stup)
         stupidity(stup),
         stopFlag(false)
 {
-    srand(time(NULL));
+    srand(time(0));
 }
 
 FlySimulator::~FlySimulator()

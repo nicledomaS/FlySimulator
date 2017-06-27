@@ -47,6 +47,7 @@ private:
     unsigned short yPos;
     const size_t stupidity;
     Telemetry telemetry;
+    std::mt19937 rgen;
 };
 
 struct Direction

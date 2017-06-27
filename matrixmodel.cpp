@@ -28,11 +28,11 @@ void MatrixModel::updateAll()
     dataChanged(index(0,0),index(row-1,column-1));
 }
 
-QModelIndex MatrixModel::index(int row, int col, const QModelIndex &parent) const
+QModelIndex MatrixModel::index(int irow, int icol, const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    if(row < row && col < column)
-        return createIndex(row,col);
+    if(irow < row && icol < column)
+        return createIndex(irow, icol);
    return QModelIndex();
 }
 

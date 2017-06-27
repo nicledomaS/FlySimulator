@@ -12,7 +12,7 @@ public:
     virtual ~MatrixModel();
 
     void reload();
-    virtual QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const;
+    virtual QModelIndex index(int irow, int icol, const QModelIndex & parent = QModelIndex()) const;
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
     virtual QVariant data(const QModelIndex & index, int role) const;
